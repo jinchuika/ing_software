@@ -1,0 +1,34 @@
+{% load staticfiles %}
+{% include "base_navbar.html" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Control de CyberZone</title>
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css'%}">
+	<link rel="stylesheet" href="{% static 'css/flatly.min.css'%}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css'%}">
+	<link rel="stylesheet" href="{% static 'css/jquery-ui.min.css'%}">
+	<link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css'%}">
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+	{% block base_navbar %}
+	{% endblock base_navbar %}
+
+	{% block content %}
+	{% endblock content %}
+
+	{% if user.is_authenticated %}
+	    Sesion iniciada
+	{% else %}
+	    iniciar sesion
+	{% endif %}
+
+	{% block javascript %}
+	    
+	{% endblock javascript %}
+</body>
+</html>
