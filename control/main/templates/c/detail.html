@@ -5,13 +5,39 @@
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">{{ cliente.nombre }} {{ cliente.apellido}}</h3>
+					<h1>{{ cliente.nombre }} {{ cliente.apellido}}</h1>
 				</div>
 				<div class="panel-body">
 					<ul>
+						<li><strong>NIT</strong>{{cliente.nit}}</li>
 						<li><strong>Dirección:</strong> {{ cliente.direccion }}</li>
 						<li><strong>Telefono:</strong> {{ cliente.telefono }}</li>
 					</ul>
+				</div>
+				<div class="panel-heading">
+					<h5 class="panel-title">Equipo y garantías</h1>
+				</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Descripción</th>
+							<th>Garantía</th>
+						</tr>
+					</thead>
+					{% for equipo in equipo_list %}
+					{% if equipo.garantia %}
+					    <tr class="success">
+					{% else %}
+					     <tr class="warning">
+					{% endif %}
+						<td>{{ equipo.descripcion }}</td>
+						<td>{{ equipo.garantia }}</td>
+					</tr>
+					{% endfor %}
+				</table>
+				<div class="panel-footer">
+					<a href="{% url "cliente_edit" id_cliente=cliente.id %}" class="btn btn-primary">Editar</a>
+					<a href="{% url "cliente_delete" id_cliente=cliente.id %}" class="btn btn-danger">Eliminar</a>
 				</div>
 			</div>
 		</div>

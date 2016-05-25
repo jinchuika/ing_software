@@ -13,7 +13,7 @@ class Tecnico(models.Model):
 
 class Cliente(models.Model):
 	"""Tabla de clientes"""
-	nit = models.CharField(max_length=10)
+	nit = models.CharField(max_length=10, unique=True)
 	nombre = models.CharField(max_length=100)
 	apellido = models.CharField(max_length=100)
 	direccion = models.CharField(max_length=200, blank=True, null=True)

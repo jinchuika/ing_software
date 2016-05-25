@@ -16,7 +16,11 @@
 				<tbody>
 					{% for cliente in cliente_list %}
 						<tr>
-							<td>{{ cliente.nit }}</td>
+							<td>
+								<a href="{% url "cliente_detail" id_cliente=cliente.id %}">
+								{{ cliente.nit }}
+								</a>
+							</td>
 							<td>{{ cliente.nombre }}</td>
 							<td>{{ cliente.apellido }}</td>
 							<td>{{ cliente.direccion }}</td>

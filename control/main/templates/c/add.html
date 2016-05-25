@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<form action="{{ action }}" method="post">
+			<table class="table table-striped">
+				{% csrf_token %}
+				{{ cliente_form.as_table }}
+			</table>
+			<input type="submit" value="Guardar">
+			</form>
+		</div>
+	</div>
+{% endblock content %}
