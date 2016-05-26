@@ -12,15 +12,20 @@ def cliente_index(request):
 	return render(request, 'c/index.html', {'cliente_list': cliente_list})
 
 def cliente_detail(request, id_cliente):
-	cliente = get_object_or_404(Cliente, id=id_cliente)
+	cliente = Cliente.objects.filter(id=id_cliente).first()
 	equipo_data = Equipo.objects.filter(cliente=cliente)
 	equipo_list = []
 	for equipo in equipo_data:
-		equipo_list.append({'descripcion':equipo,'garantia': Garantia.objects.get(equipo=equipo).isValid()})
+		garantia = Garantia.objects.filter(equipo=equipo).first()
+		if garantia:
+			garantia = garantia.isValid()
+		else:
+			garantia = 'Sin garantía'
+		equipo_list.append({'descripcion':equipo,'garantia': garantia})
 	return render(request, 'c/detail.html', {'cliente': cliente, 'equipo_list': equipo_list})
 
 def cliente_edit(request, id_cliente):
-	cliente = get_object_or_404(Cliente, id=id_cliente)
+	cliente = Cliente.objects.filter(id=id_cliente).first()
 
 	if request.method=='POST':
 		cliente_form = ClienteModelForm(request.POST, instance = cliente)

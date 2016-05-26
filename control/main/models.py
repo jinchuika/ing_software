@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from datetime import timedelta, date, time
+from decimal import Decimal
 
 class Tecnico(models.Model):
 	"""Tabla de empleados"""
 	nombre = models.CharField(max_length=100)
 	apellido =  models.CharField(max_length=100)
-	salario = models.DecimalField(max_digits=5, decimal_places=2)
+	salario = models.DecimalField(max_digits=7, decimal_places=2)
 
 	def __str__(self):
 		return str(self.nombre) + " " + str(self.apellido)
@@ -42,7 +43,7 @@ class Garantia(models.Model):
 	equipo = models.ForeignKey('Equipo')
 	fecha_inicio = models.DateField(default=date.today)
 	fecha_fin = models.DateField(null=True, blank=True, default=date.today()+timedelta(days=180))
-	precio = models.DecimalField(max_digits=5, decimal_places=2)
+	precio = models.DecimalField(max_digits=7, decimal_places=2, default=Decimal('0.00'))
 
 	def isValid(self):
 		if self.fecha_fin:
@@ -56,7 +57,7 @@ class Garantia(models.Model):
 class TipoIncidencia(models.Model):
 	"""Tipos de incidencia que maneja el negocio"""
 	descripcion = models.CharField(max_length=50)
-	precio = models.DecimalField(max_digits=5, decimal_places=2)
+	precio = models.DecimalField(max_digits=7, decimal_places=2)
 
 	def __str__(self):
 		return str(self.descripcion)
@@ -85,7 +86,7 @@ class DetalleFactura(models.Model):
 	factura = models.ForeignKey('Factura', default=1)
 	incidencia = models.ForeignKey('Incidencia', null=True, blank=True)
 	garantia = models.ForeignKey('Garantia', null=True, blank=True)
-	precio = models.DecimalField(max_digits=5, decimal_places=2)
+	precio = models.DecimalField(max_digits=7, decimal_places=2)
 
 	def __str__(self):
 		return str(self.incidencia) + " en " + str(self.garantia)

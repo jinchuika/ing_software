@@ -25,10 +25,12 @@
 						</tr>
 					</thead>
 					{% for equipo in equipo_list %}
-					{% if equipo.garantia %}
+					{% if equipo.garantia == True %}
 					    <tr class="success">
+					{% elif equipo.garantia == False %}
+					 <tr class="warning">
 					{% else %}
-					     <tr class="warning">
+					     <tr class="info">
 					{% endif %}
 						<td>{{ equipo.descripcion }}</td>
 						<td>{{ equipo.garantia }}</td>
