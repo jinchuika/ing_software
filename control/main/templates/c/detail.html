@@ -14,8 +14,12 @@
 						<li><strong>Telefono:</strong> {{ cliente.telefono }}</li>
 					</ul>
 				</div>
+				<div class="panel-body">
+					<a href="{% url "cliente_edit" id_cliente=cliente.id %}" class="btn btn-sm btn-primary">Editar</a>
+					<a href="{% url "cliente_delete" id_cliente=cliente.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+				</div>
 				<div class="panel-heading">
-					<h5 class="panel-title">Equipo y garantías</h1>
+					<h3 >Equipo y garantías</h3>
 				</div>
 				<table class="table table-bordered">
 					<thead>
@@ -25,22 +29,23 @@
 						</tr>
 					</thead>
 					{% for equipo in equipo_list %}
-					{% if equipo.garantia == True %}
-					    <tr class="success">
-					{% elif equipo.garantia == False %}
-					 <tr class="warning">
-					{% else %}
-					     <tr class="info">
-					{% endif %}
+					<tr>
 						<td>{{ equipo.descripcion }}</td>
-						<td>{{ equipo.garantia }}</td>
+						{% if equipo.garantia.is_valid == True %}
+						    <td class="success">
+						    	<a href="{% url "garantia_detail" id_garantia=equipo.garantia.id %}"></a>
+						    	Garantía vigente
+						{% elif equipo.garantia == False %}
+						 <td class="warning">
+						 	Garantía vencida
+						{% else %}
+						     <td class="info">
+						     <a href="{% url "garantia_add_equipo" id_equipo=equipo.descripcion.id %}">Sin garantía</a> 
+						{% endif %}
+						</td>
 					</tr>
 					{% endfor %}
 				</table>
-				<div class="panel-footer">
-					<a href="{% url "cliente_edit" id_cliente=cliente.id %}" class="btn btn-primary">Editar</a>
-					<a href="{% url "cliente_delete" id_cliente=cliente.id %}" class="btn btn-danger">Eliminar</a>
-				</div>
 			</div>
 		</div>
 	</div>

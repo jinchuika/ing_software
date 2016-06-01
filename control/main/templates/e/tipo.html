@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>Tipos de equipo</h1>
+				</div>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Descripción</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for tipo_equipo in tipo_equipo_list %}
+							<tr>
+								<td>{{ tipo_equipo.descripcion }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row well">
+		<div class="col-md-12">
+			<form action="{{ action }}" method="post">
+				<table class="table table-striped">
+					{% csrf_token %}
+					{{ tipo_equipo_form.as_table }}
+				</table>
+				<input type="submit" class="btn btn-primary" value="Agregar">
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h1>{{ garantia }}</h1>
+				</div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Detalle</th>
+							<th>Fecha de reporte</th>
+							<th>Fecha de solúción</th>
+							<th>Encargado</th>
+							<th>Estado</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for incidencia in incidencia_list %}
+							<tr>
+								<td>
+								<a href="{% url "garantia_detail_incidencia" id_garantia=incidencia.garantia.id id_incidencia=incidencia.id %}">
+								{{ incidencia.tipo_incidencia }}</a>
+								</td>
+								<td>{{ incidencia.fecha_reporte }}</td>
+								<td>{{ incidencia.fecha_solucion|default_if_none:"" }}</td>
+								<td>{{ incidencia.responsable }}</td>
+
+								{% if incidencia.is_solved == True %}
+								    <td class="success">Resuelta</td>
+								{% else %}
+								    <td class="danger">Pendiente</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<hr>
+				{% ifequal incidencia None %}
+				    <button id="btn-nueva" class="btn btn-info btn-sm">Nueva incidencia</button>
+				{% endifequal %}
+				<form action="{{ action }}" method="post">
+					<table id="form-table" class="table table-bordered table-hover">
+						{% csrf_token %}
+						{{ incidencia_form.as_table }}
+						<tr>
+							<td><input type="submit" class="btn btn-primary btn-sm" value="Guardar"></td>
+							{% if incidencia %}
+							<td><a href="{% url "garantia_detail" id_garantia=garantia.id %}" class="btn btn-danger btn-sm">Cancelar</a></td>
+							{% else %}
+							 <td><a href="#" class="btn btn-danger btn-sm" onclick="$('#btn-nueva').click();">Cancelar</a></td>
+							{% endif %}
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script>
+	$(document).ready(function () {
+		{% ifequal incidencia None %}
+		    $('#form-table').hide();
+		{% endifequal %}
+		$('#btn-nueva').click(function () {
+			$('#form-table').toggle();
+			$(this).toggle();
+		});
+	});
+</script>
+{% endblock javascript %}

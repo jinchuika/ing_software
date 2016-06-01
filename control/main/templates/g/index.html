@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th>Garantía</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for garantia in garantia_list %}
+						<tr>
+							<td>
+								<a href="{% url "garantia_detail" id_garantia=garantia.id %}">{{ garantia }}</a>
+							</td>
+							<td>{{ garantia.ver_vigencia }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock content %}

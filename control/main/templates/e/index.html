@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>Código</th>
+						<th>Tipo de equipo</th>
+						<th>Equipo</th>
+						<th>Garantía</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for equipo in equipo_list %}
+						<tr>
+							<td>
+								{% if equipo.ver_garantia == False %}
+								    <a href="{% url "garantia_add" %}">
+									{{ equipo.generar_codigo }}
+									</a>
+								{% else %}
+								    <a href="{% url "garantia_detail" id_garantia=equipo.ver_garantia.id %}">
+									{{ equipo.generar_codigo }}
+									</a>
+								{% endif %}
+								
+							</td>
+							<td>{{ equipo.tipo_equipo }}</td>
+							<td>{{ equipo.cliente }}</td>
+							<td>{{ equipo.ver_garantia.ver_vigencia }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock content %}

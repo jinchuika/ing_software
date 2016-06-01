@@ -8,7 +8,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="">CyberZone</a>
+			<a class="navbar-brand" href="{% url "index" %}">CyberZone</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -23,17 +23,16 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Equipo <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="">Tipo de equipo</a></li>
-						<li><a href="">Listado de equipo</a></li>
-						<li><a href="">Registrar equipo</a></li>
+						<li><a href="{% url "tipo_equipo_index" %}">Tipo de equipo</a></li>
+						<li><a href="{% url "equipo_index" %}">Listado de equipo</a></li>
+						<li><a href="{% url "equipo_add" %}">Registrar equipo</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">Garantías <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="">Listado de garantías</a></li>
-						<li><a href="">Crear garantía</a></li>
-						<li><a href="">Registro de soporte técnico</a></li>
+						<li><a href="{% url "garantia_index" %}">Listado de garantías</a></li>
+						<li><a href="{% url "garantia_add" %}">Crear garantía</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">

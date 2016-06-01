@@ -32,26 +32,42 @@ class TipoEquipo(models.Model):
 
 class Equipo(models.Model):
 	"""Informacion sobre los equipos"""
-	cliente = models.ForeignKey('Cliente')
-	tipo_equipo = models.ForeignKey('TipoEquipo')
+	cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT)
+	tipo_equipo = models.ForeignKey('TipoEquipo', on_delete=models.PROTECT)
+
+	def ver_garantia(self):
+		garantia = Garantia.objects.filter(equipo=self).first()
+		if garantia:
+			return garantia
+		else:
+			return False
+
+	def generar_codigo(self):
+		return str(self.cliente.id)+"-"+str(self.tipo_equipo.id)+"-"+str(self.id)
 
 	def __str__(self):
 		return str(self.tipo_equipo) + " de " + str(self.cliente)
 
 class Garantia(models.Model):
 	"""Control de las garantías de equipo"""
-	equipo = models.ForeignKey('Equipo')
+	equipo = models.ForeignKey('Equipo', on_delete=models.PROTECT)
 	fecha_inicio = models.DateField(default=date.today)
 	fecha_fin = models.DateField(null=True, blank=True, default=date.today()+timedelta(days=180))
 	precio = models.DecimalField(max_digits=7, decimal_places=2, default=Decimal('0.00'))
 
-	def isValid(self):
+	def is_valid(self):
 		if self.fecha_fin:
 			return self.fecha_inicio <= date.today() <= self.fecha_fin
 		return self.fecha_inicio <= date.today()
 
+	def ver_vigencia(self):
+		if self.is_valid():
+			return "vigente"
+		else:
+			return "vencida"
+
 	def __str__(self):
-		return "garantía del " + str(self.equipo) + str(self.isValid())
+		return "garantía del " + str(self.equipo)
 		
 
 class TipoIncidencia(models.Model):
@@ -64,18 +80,24 @@ class TipoIncidencia(models.Model):
 
 class Incidencia(models.Model):
 	"""Reporte de daños para una garantía"""
-	tipo_incidencia = models.ForeignKey('TipoIncidencia')
-	garantia = models.ForeignKey('Garantia')
-	responsable = models.ForeignKey('Tecnico', default=1)
+	tipo_incidencia = models.ForeignKey('TipoIncidencia', on_delete=models.PROTECT)
+	garantia = models.ForeignKey('Garantia', on_delete=models.PROTECT)
+	responsable = models.ForeignKey('Tecnico', default=1, on_delete=models.PROTECT)
 	fecha_reporte = models.DateField()
 	fecha_solucion = models.DateField(null=True, blank=True)
+
+	def is_solved(self):
+		if self.fecha_solucion:
+			return date.today() >= self.fecha_solucion
+		else:
+			return False
 
 	def __str__(self):
 		return str(self.tipo_incidencia) + " de la " + str(self.garantia)
 
 class Factura(models.Model):
 	"""Facturas para las ventas"""
-	nit_cliente = models.ForeignKey('Cliente')
+	nit_cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT)
 	fecha = models.DateField()
 
 	def __str__(self):
@@ -83,9 +105,9 @@ class Factura(models.Model):
 
 class DetalleFactura(models.Model):
 	"""Detalle para cada item de la factura"""
-	factura = models.ForeignKey('Factura', default=1)
-	incidencia = models.ForeignKey('Incidencia', null=True, blank=True)
-	garantia = models.ForeignKey('Garantia', null=True, blank=True)
+	factura = models.ForeignKey('Factura', default=1, on_delete=models.PROTECT)
+	incidencia = models.ForeignKey('Incidencia', null=True, blank=True, on_delete=models.PROTECT)
+	garantia = models.ForeignKey('Garantia', null=True, blank=True, on_delete=models.PROTECT)
 	precio = models.DecimalField(max_digits=7, decimal_places=2)
 
 	def __str__(self):
