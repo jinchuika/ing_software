@@ -25,6 +25,17 @@ class GarantiaModelForm(ModelForm):
 		model = Garantia
 		fields = '__all__'
 
+	def clean(self):
+		fecha_inicio = self.cleaned_data.get("fecha_inicio")
+		fecha_fin = self.cleaned_data.get("fecha_fin")
+		if fecha_fin:
+			if fecha_fin < fecha_inicio:
+				msg = u"Fecha de fin debe ser mayor a la de inicio."
+				self._errors["fecha_fin"] = self.error_class([msg])
+			if date.today() > fecha_fin:
+				msg = u"Fecha de fin debe ser después de hoy"
+				self._errors["fecha_fin"] = self.error_class([msg])
+
 class IncidenciaModelForm(ModelForm):
 	class Meta:
 		model = Incidencia

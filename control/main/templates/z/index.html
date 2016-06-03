@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+    <table class="table table-bordered">
+    <thead>
+    	<tr>
+    		<th>Clase</th>
+    		<th>Cantidad</th>
+    		<th>Porcentaje</th>
+    		<th>Pareto</th>
+    	</tr>
+    </thead>
+    	{% for incidencia in incidencia_list %}
+    		<tr>
+    			<td>{{ incidencia.descripcion }}</td>
+    			<td>{{ incidencia.cantidad }}</td>
+    			<td>{{ incidencia.porcentaje|floatformat:2 }}%</td>
+    			{% if incidencia.suma < 80 %}
+    			    <td class="success">Más efectivo</td>
+    			   {% else %}
+    			       <td class="danger">Menos efectivo</td>
+    			{% endif %}
+    			
+    		</tr>
+    	{% endfor %}
+    </table>
+    <div id="piechart"></div>
+{% endblock content %}
+
+{% block javascript  %}
+    <script>
+    	google.charts.load('current', {'packages':['corechart']});
+    	google.charts.setOnLoadCallback(drawChart);
+    	function drawChart() {
+
+    		var data = google.visualization.arrayToDataTable([
+    			['Falla', 'Cantidad'],
+    			{% for incidencia in incidencia_list %}
+    				['{{ incidencia.descripcion }}', {{ incidencia.porcentaje }}],
+    			{% endfor %}
+    			
+    			]);
+
+    		var options = {
+    			title: 'Análisis 80-20',
+    			width: 600,
+  				height: 440,
+    			slices: {
+    				{% for incidencia in incidencia_list %}
+    				{% if incidencia.suma < 80 %}
+    				    {{ incidencia.index }}: { color: '#18bc9c' },
+    				{% else %}
+    				    {{ incidencia.index }}: { color: '#e74c3c' },
+    				{% endif %}
+    					
+    				{% endfor %}
+    			}
+    		};
+
+    		var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+    		chart.draw(data, options);
+    	}
+    </script>
+{% endblock javascript  %}

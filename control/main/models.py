@@ -67,7 +67,7 @@ class Garantia(models.Model):
 			return "vencida"
 
 	def __str__(self):
-		return "garantía del " + str(self.equipo)
+		return "Garantía del " + str(self.equipo)
 		
 
 class TipoIncidencia(models.Model):
@@ -94,21 +94,3 @@ class Incidencia(models.Model):
 
 	def __str__(self):
 		return str(self.tipo_incidencia) + " de la " + str(self.garantia)
-
-class Factura(models.Model):
-	"""Facturas para las ventas"""
-	nit_cliente = models.ForeignKey('Cliente', on_delete=models.PROTECT)
-	fecha = models.DateField()
-
-	def __str__(self):
-		return str(self.nit_cliente)
-
-class DetalleFactura(models.Model):
-	"""Detalle para cada item de la factura"""
-	factura = models.ForeignKey('Factura', default=1, on_delete=models.PROTECT)
-	incidencia = models.ForeignKey('Incidencia', null=True, blank=True, on_delete=models.PROTECT)
-	garantia = models.ForeignKey('Garantia', null=True, blank=True, on_delete=models.PROTECT)
-	precio = models.DecimalField(max_digits=7, decimal_places=2)
-
-	def __str__(self):
-		return str(self.incidencia) + " en " + str(self.garantia)

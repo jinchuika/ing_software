@@ -7,6 +7,14 @@
 				<div class="panel-heading">
 					<h1>{{ garantia }}</h1>
 				</div>
+				<div class="panel-body">
+					<ul>
+						<li><b>Fecha de inicio: </b>{{ garantia.fecha_inicio }}</li>
+						<li><b>Fecha de fin: </b>{{ garantia.fecha_fin|default_if_none:"Sin especificar" }}</li>
+						<li><b>Precio: </b>{{ garantia.precio }}</li>
+					</ul>
+					<a href="{% url "garantia_add_edit" id_equipo=garantia.equipo.id id_garantia=garantia.id %}" class="btn btn-primary btn-xs">Editar</a>
+				</div>
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -38,9 +46,9 @@
 					</tbody>
 				</table>
 				<hr>
-				{% ifequal incidencia None %}
+				{% if garantia.is_valid == True and incidencia == None %}
 				    <button id="btn-nueva" class="btn btn-info btn-sm">Nueva incidencia</button>
-				{% endifequal %}
+				{% endif %}
 				<form action="{{ action }}" method="post">
 					<table id="form-table" class="table table-bordered table-hover">
 						{% csrf_token %}
@@ -64,9 +72,9 @@
 {% block javascript %}
 <script>
 	$(document).ready(function () {
-		{% ifequal incidencia None %}
+		{% if incidencia == None %}
 		    $('#form-table').hide();
-		{% endifequal %}
+		{% endif %}
 		$('#btn-nueva').click(function () {
 			$('#form-table').toggle();
 			$(this).toggle();

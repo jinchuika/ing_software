@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from main.models import *
 from main.forms import *
 from django.views.generic import UpdateView
 from django.http import Http404
 
+
 def index(request):
-	return render(request, 'main/index.html')
+	incidencia_list = Incidencia.objects.filter(
+		Q(Q(fecha_solucion__gt=date.today()) | Q(fecha_solucion=None))
+	).order_by('fecha_reporte')
+	return render(request, 'main/index.html', {'incidencia_list': incidencia_list})
 
 def cliente_index(request):
 	cliente_list = Cliente.objects.all().order_by('nombre')
@@ -74,15 +79,19 @@ def equipo_index(request):
 	equipo_list = Equipo.objects.all()
 	return render(request, 'e/index.html', {'equipo_list':equipo_list})
 
-def equipo_add(request):
+def equipo_add(request, id_cliente=None):
 	if request.method=='POST':
 		equipo_form = EquipoModelForm(request.POST)
 		if equipo_form.is_valid():
 			equipo = equipo_form.save(commit=False)
 			equipo.save()
-			return redirect('equipo_detail', id_equipo=equipo.id)
+			return redirect('garantia_add_equipo', id_equipo=equipo.id)
 	else:
-		equipo_form = EquipoModelForm()
+		if id_cliente:
+			cliente = Cliente.objects.filter(id=id_cliente).first()
+			equipo_form = EquipoModelForm(initial={'cliente': cliente})
+		else:
+			equipo_form = EquipoModelForm()
 	return render(request, 'e/add.html', {'equipo_form': equipo_form})
 
 def equipo_detail(request, id_equipo):
@@ -93,17 +102,25 @@ def garantia_index(request):
 	garantia_list = Garantia.objects.all()
 	return render(request, 'g/index.html', {'garantia_list': garantia_list})
 
-def garantia_add(request, id_equipo=None):
+def garantia_add(request, id_equipo=None, id_garantia=None):
 	equipo = Equipo.objects.filter(id=id_equipo).first()
+	garantia = Garantia.objects.filter(id=id_garantia).first()
 	if request.method=='POST':
-		garantia_form = GarantiaModelForm(request.POST)
+		if garantia:
+			garantia_form = GarantiaModelForm(request.POST, instance=garantia, initial={'fecha_inicio':garantia.fecha_inicio})
+		else:
+			garantia_form = GarantiaModelForm(request.POST)
 		if garantia_form.is_valid():
 			garantia = garantia_form.save(commit=False)
 			garantia.save()
 			return redirect('garantia_detail', id_garantia=garantia.id)
 	else:
-		if equipo:
+		if equipo and garantia:
+			garantia_form = GarantiaModelForm(initial={'equipo':equipo, 'fecha_inicio': garantia.fecha_inicio, 'fecha_fin': garantia.fecha_fin})
+		elif equipo:
 			garantia_form = GarantiaModelForm(initial={'equipo':equipo})
+		elif garantia:
+			garantia_form = GarantiaModelForm(initial={'equipo':garantia.equipo, 'fecha_inicio': garantia.fecha_inicio, 'fecha_fin': garantia.fecha_fin})
 		else:
 			garantia_form = GarantiaModelForm()
 	return render(request, 'g/add.html', {'garantia_form': garantia_form})
@@ -136,3 +153,27 @@ def garantia_detail(request, id_garantia, id_incidencia=None):
 	if incidencia:
 		context['incidencia'] = incidencia
 	return render(request, 'g/detail.html', context)
+
+def informe_tipo(request):
+	incidencia_list = []
+	total = Incidencia.objects.count()
+	for tipo in Incidencia.objects.values('tipo_incidencia').distinct():
+		incidencia_desc = TipoIncidencia.objects.get(id=tipo['tipo_incidencia'])
+		cuenta = Incidencia.objects.filter(tipo_incidencia=tipo['tipo_incidencia']).count()
+		porcentaje = (cuenta/total)*100
+		incidencia_list.append({
+			'descripcion': incidencia_desc,
+			'cantidad': cuenta,
+			'porcentaje': porcentaje
+		})
+	incidencia_list = sorted(incidencia_list, reverse=True, key=lambda incidencia: incidencia['cantidad'])
+	for index, incidencia in enumerate(incidencia_list):
+		suma = 0
+		suma_p = 0
+		for x in range(0,index+1):
+			suma += incidencia_list[x]['porcentaje']
+		incidencia['index'] = index
+		incidencia['suma'] = suma
+		incidencia['resta'] = 100 - suma
+
+	return render(request, 'z/index.html', {'incidencia_list': incidencia_list})

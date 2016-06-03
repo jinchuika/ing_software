@@ -1,1 +1,33 @@
 {% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th>Equipo</th>
+						<th>Tipo de falla</th>
+						<th>Fecha de reporte</th>
+						<th>Responsable</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for incidencia in incidencia_list %}
+						<tr>
+							<td>
+								<a href="{% url "garantia_detail_incidencia" id_garantia=incidencia.garantia.id id_incidencia=incidencia.id %}">
+									{{ incidencia.garantia.equipo }}
+								</a>
+							</td>
+							<td>{{ incidencia.tipo_incidencia }}</td>
+							<td>{{ incidencia.fecha_reporte }}</td>
+							<td>{{ incidencia.responsable }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock content %}

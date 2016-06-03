@@ -33,11 +33,14 @@
 						<td>{{ equipo.descripcion }}</td>
 						{% if equipo.garantia.is_valid == True %}
 						    <td class="success">
-						    	<a href="{% url "garantia_detail" id_garantia=equipo.garantia.id %}"></a>
+						    	<a href="{% url "garantia_detail" id_garantia=equipo.garantia.id %}">
 						    	Garantía vigente
-						{% elif equipo.garantia == False %}
-						 <td class="warning">
-						 	Garantía vencida
+						    	</a>
+						{% elif equipo.garantia.is_valid == False %}
+							 <td class="warning">
+							 	<a href="{% url "garantia_detail" id_garantia=equipo.garantia.id %}">
+						    	Garantía vencida
+						    	</a>
 						{% else %}
 						     <td class="info">
 						     <a href="{% url "garantia_add_equipo" id_equipo=equipo.descripcion.id %}">Sin garantía</a> 
@@ -46,6 +49,9 @@
 					</tr>
 					{% endfor %}
 				</table>
+				<div class="panel-body">
+					<a href="{% url "equipo_add_cliente" id_cliente=cliente.id %}" class="btn btn-sm btn-primary">Agregar equipo</a>
+				</div>
 			</div>
 		</div>
 	</div>

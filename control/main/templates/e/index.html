@@ -17,7 +17,7 @@
 						<tr>
 							<td>
 								{% if equipo.ver_garantia == False %}
-								    <a href="{% url "garantia_add" %}">
+								    <a href="{% url "garantia_add_equipo" id_equipo=equipo.id %}">
 									{{ equipo.generar_codigo }}
 									</a>
 								{% else %}
