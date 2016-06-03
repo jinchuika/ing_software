@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="container">
+	
 	<div class="row">
 		<div class="col-md-12">
+		<legend><h1>Garantía</h1></legend>
 			<form action="{{ action }}" method="post">
 			<table class="table table-striped">
 				{% csrf_token %}
 				{{ garantia_form.as_table }}
 			</table>
-			<input type="submit" value="Guardar">
+			<input type="submit" class="btn btn-info" value="Guardar">
 			</form>
 		</div>
 	</div>
+</div>
 {% endblock content %}
